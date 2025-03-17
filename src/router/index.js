@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import UVIndex from "../components/UVIndex.vue"; // UV Index page as the home route
+import HomeView from "../components/HomeView.vue";
+import UVImpacts from "../components/UVImpacts";
 // import EffectsView from "../views/EffectsView.vue";
 // import RemindersView from "../views/RemindersView.vue";
 // import GearView from "../views/GearView.vue";
@@ -8,8 +10,18 @@ import UVIndex from "../components/UVIndex.vue"; // UV Index page as the home ro
 const routes = [
   {
     path: "/",
+    name: "home",
+    component: HomeView,
+  },
+  {
+    path: "/uv-index",
     name: "uv-index",
     component: UVIndex,
+  },
+  {
+    path: "/uv-impacts",
+    name: "uv-impacts",
+    component: UVImpacts,
   },
   //   {
   //     path: "/effects",
