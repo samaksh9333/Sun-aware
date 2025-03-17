@@ -33,18 +33,13 @@
               >
             </li>
             <li class="nav-item">
-              <router-link class="nav-link" to="/reminders"
-                >Reminders</router-link
+              <router-link class="nav-link" to="/Personalise-view"
+                >Personalised Recommendation</router-link
               >
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/gear"
                 >Sun Protection Gear</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/community"
-                >Join Our Community</router-link
               >
             </li>
           </ul>
