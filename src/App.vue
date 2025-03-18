@@ -19,28 +19,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <router-link class="nav-link" to="/">Home</router-link>
-            </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link class="nav-link" to="/uv-index"
-                >UV Index</router-link
+                >UV index</router-link
               >
-            </li>
+            </li> -->
             <li class="nav-item">
-              <router-link class="nav-link" to="/uv-impacts"
-                >UV Impacts</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/Personalise-view"
-                >Personalised Recommendation</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/gear"
-                >Sun Protection Gear</router-link
-              >
+              <router-link class="nav-link" to="/personalise-view">
+                Personalised Recommendation
+              </router-link>
             </li>
           </ul>
         </div>

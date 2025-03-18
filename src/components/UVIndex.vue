@@ -1,7 +1,7 @@
 <template>
   <div class="container my-4">
     <h1 class="mb-4">
-      Live UV Index(A relative value to measure Ultra Violet Radiation which
+      Live UV Index (A relative value to measure Ultra Violet Radiation which
       causes skin diseases.)
     </h1>
     <!-- Search Form -->
@@ -40,7 +40,7 @@
           <span
             :style="{ color: uvColor, fontWeight: 'bold', fontSize: '1.5rem' }"
           >
-            {{ uvIndex }}
+            {{ uvIndex }} <small class="text-muted">(Sun Risk)</small>
           </span>
         </p>
         <p class="warning-message text-warning fw-bold">{{ uvWarning }}</p>
@@ -69,6 +69,7 @@
               src="@/assets/uv-index-scale.png"
               alt="UV Index Scale"
               class="img-fluid"
+              style="width: 100%; height: 100%; object-fit: contain"
             />
           </div>
         </div>
@@ -118,17 +119,14 @@ export default {
       displayLocation: "",
       map: null,
       marker: null,
-      apiKey: "07e31bea64b6d5e3a0d79991e19da066",
+      apiKey: "07e31bea64b6d5e3a0d79991e19da066", // Replace with your actual API key
       defaultCountry: "AU",
     };
   },
   computed: {
+    // Always return black for the UV index text
     uvColor() {
-      if (this.uvIndex < 3) return "green";
-      else if (this.uvIndex < 6) return "yellow";
-      else if (this.uvIndex < 8) return "orange";
-      else if (this.uvIndex < 11) return "red";
-      else return "purple";
+      return "black";
     },
     uvPercentage() {
       return Math.min((this.uvIndex / 15) * 100, 100);
@@ -148,6 +146,37 @@ export default {
     },
   },
   methods: {
+    async fetchUVIndexByCoords(lat, lon, locationName = "") {
+      this.loading = true;
+      this.error = null;
+      this.uvIndex = null;
+      this.displayLocation =
+        locationName || `Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)}`;
+
+      const url = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily,alerts&appid=${this.apiKey}`;
+      console.log("Fetching UV data from URL:", url);
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("API error response:", errorText);
+          this.error = "Error fetching UV data: " + errorText;
+          return;
+        }
+        const data = await response.json();
+        console.log("API response:", data);
+        if (data.current && data.current.uvi !== undefined) {
+          this.uvIndex = data.current.uvi;
+        } else {
+          this.error = "Unexpected API response format.";
+        }
+      } catch (err) {
+        console.error("Error fetching UV data:", err);
+        this.error = "Error fetching UV data: " + err.message;
+      } finally {
+        this.loading = false;
+      }
+    },
     async fetchUVIndexBySearch() {
       this.loading = true;
       this.error = null;
@@ -186,20 +215,10 @@ export default {
           country = geoData.country;
         }
         this.displayLocation = `${name}, ${country}`;
-        const oneCallUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,daily,alerts&appid=${this.apiKey}`;
-        const oneCallResponse = await fetch(oneCallUrl);
-        if (!oneCallResponse.ok) {
-          throw new Error(`One Call API error: ${oneCallResponse.status}`);
-        }
-        const oneCallData = await oneCallResponse.json();
-        this.uvIndex = oneCallData.current.uvi;
+        await this.fetchUVIndexByCoords(lat, lon, this.displayLocation);
         if (this.map) {
           this.map.setView([lat, lon], 10);
-          if (this.marker) {
-            this.marker.setLatLng([lat, lon]);
-          } else {
-            this.marker = L.marker([lat, lon]).addTo(this.map);
-          }
+          this.updateMarker(lat, lon);
         }
       } catch (err) {
         console.error("Error fetching UV index data:", err);
@@ -272,7 +291,7 @@ export default {
   },
   mounted() {
     this.initMap();
-    // Optionally, auto-fetch current location data on mount:
+    // Optionally, auto-fetch current location UV data on mount:
     // this.fetchUVIndexCurrent();
   },
 };

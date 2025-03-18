@@ -1,6 +1,12 @@
 <template>
   <div class="container my-4">
+    <!-- Back Arrow Button inside the card -->
     <div class="card shadow-sm personalise-card">
+      <div class="card-header">
+        <button class="btn btn-link back-btn" @click="$router.back()">
+          &larr; Back
+        </button>
+      </div>
       <div class="card-body">
         <h2 class="card-title mb-4 text-center">
           Personal Sun Protection Recommendations
@@ -176,6 +182,13 @@ export default {
   margin: 20px;
   padding: 20px;
   border-radius: 8px;
+}
+
+/* Style for the back button */
+.back-btn {
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
 }
 
 /* Form label styling */
